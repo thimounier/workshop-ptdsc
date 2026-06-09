@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workshop PTDSC – 10 jun 2026</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;background:#fff;}
+#app{background:#fff;min-height:100vh;width:100%;font-family:'Barlow','Helvetica Neue',Arial,sans-serif;color:#333;display:flex;flex-direction:column;align-items:center;}
+.hero{width:100%;position:relative;overflow:hidden;height:200px;display:flex;align-items:center;justify-content:center;background:#0e2a45;}
+#nc{position:absolute;inset:0;width:100%;height:100%;}
+.hero-text{position:relative;z-index:2;text-align:center;pointer-events:none;padding:0 24px;}
+.hero-event{font-family:'Barlow Condensed',sans-serif;font-size:clamp(26px,4vw,40px);font-weight:700;color:#fff;line-height:1.2;}
+.hero-event em{font-style:normal;color:#7ee8c2;}
+.meta-strip{width:100%;background:#1a5fa0;display:flex;justify-content:center;gap:2.5rem;padding:.65rem 1.5rem;flex-wrap:wrap;}
+.meta-item{font-size:16px;color:#fff;display:flex;align-items:center;gap:6px;}
+.meta-item i{opacity:.85;font-size:17px;}
+.body-wrap{display:flex;width:100%;max-width:1100px;padding:1.2rem 1.4rem 1rem;align-items:flex-start;background:#fff;}
+.sched-col{width:310px;flex-shrink:0;padding-right:1.4rem;}
+.sched-header{background:#195f2f;color:#fff;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:6px 12px;margin-bottom:1px;}
+.sched-item{display:flex;border-bottom:1px solid #eaeff4;transition:background .3s;background:#fff;}
+.sched-item.active{background:#edf7f0;}
+.sched-item.is-break{background:#f0f5fb;}
+.sched-time{font-size:13.5px;color:#1a5fa0;font-weight:700;padding:7px 8px 7px 11px;white-space:nowrap;min-width:106px;font-family:'Barlow Condensed',sans-serif;border-right:3px solid #e8edf2;transition:border-color .3s,color .3s;}
+.sched-item.active .sched-time{border-right-color:#195f2f;color:#195f2f;}
+.sched-text{font-size:13px;color:#333;line-height:1.35;padding:7px 8px;}
+.sched-item.is-break .sched-text{color:#1a5fa0;font-weight:700;font-size:12.5px;}
+.sched-item.active .sched-text{color:#195f2f;font-weight:700;}
+.right-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:.75rem;}
+.panels-col{display:flex;flex-direction:column;gap:5px;}
+.panel-chip{display:flex;align-items:stretch;border:1px solid #dce4ed;border-radius:3px;overflow:hidden;background:#fff;transition:border-color .35s,box-shadow .35s;}
+.panel-chip.active{border-color:#1a5fa0;box-shadow:0 2px 8px rgba(26,95,160,.12);}
+.chip-accent{width:6px;background:#dce4ed;flex-shrink:0;transition:background .35s;}
+.panel-chip.active .chip-accent{background:#1a5fa0;}
+.chip-body{padding:6px 12px;}
+.chip-panel{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8094ab;font-weight:700;margin-bottom:2px;transition:color .35s;}
+.panel-chip.active .chip-panel{color:#1a5fa0;}
+.chip-title{font-size:15px;color:#333;font-weight:700;line-height:1.25;}
+.chip-time{font-size:13px;color:#8094ab;margin-top:2px;font-family:'Barlow Condensed',sans-serif;}
+.speaker-stage{position:relative;width:100%;height:240px;overflow:hidden;}
+.speaker-card{position:absolute;inset:0;display:flex;flex-direction:column;background:#f4f8ff;border:2px solid #1a5fa0;border-left:7px solid #1a5fa0;border-radius:5px;box-shadow:0 4px 18px rgba(26,95,160,.18);overflow:hidden;opacity:0;transform:translateY(14px);transition:opacity .45s,transform .45s;pointer-events:none;}
+.speaker-card.visible{opacity:1;transform:translateY(0);pointer-events:auto;}
+.speaker-card.exiting{opacity:0;transform:translateY(-14px);}
+.sp-header{background:#1a5fa0;padding:.6rem 1.1rem;display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;flex-shrink:0;}
+.sp-painel{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.75);font-weight:700;white-space:nowrap;}
+.sp-name{font-family:'Barlow Condensed',sans-serif;font-size:23px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-body{padding:.8rem 1.1rem;display:flex;flex-direction:column;gap:6px;flex:1;overflow:hidden;}
+.sp-role{font-size:15px;color:#1a5fa0;font-style:italic;font-weight:600;line-height:1.3;flex-shrink:0;}
+.sp-bio{font-size:15.5px;color:#4a5e72;line-height:1.6;overflow:hidden;flex:1;}
+.dots-row{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;padding:.4rem 0 0;}
+.dot{width:7px;height:7px;border-radius:50%;background:#c5cdd8;transition:background .3s,transform .3s;cursor:pointer;}
+.dot.active{background:#1a5fa0;transform:scale(1.5);}
+.footer-bar{width:100%;background:#195f2f;padding:.55rem 2rem;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:1.5rem;}
+.ft{font-size:13px;color:rgba(255,255,255,.8);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.07em;text-transform:uppercase;}
+.ft-sep{color:rgba(255,255,255,.3);font-size:14px;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hero">
+    <canvas id="nc"></canvas>
+    <div class="hero-text">
+      <div class="hero-event">Workshop<br><em>&ldquo;Parque Tecnol&oacute;gico de Defesa e Seguran&ccedil;a em Campinas&rdquo;</em></div>
+    </div>
+  </div>
+  <div class="meta-strip">
+    <div class="meta-item"><i class="ti ti-calendar"></i> 10 de junho de 2026</div>
+    <div class="meta-item"><i class="ti ti-clock"></i> 08h00 &ndash; 17h30</div>
+    <div class="meta-item"><i class="ti ti-map-pin"></i> Casa do Prof. Visitante &middot; FUNCAMP &middot; Campinas-SP</div>
+  </div>
+  <div class="body-wrap">
+    <div class="sched-col">
+      <div class="sched-header">Programa&ccedil;&atilde;o Geral</div>
+      <div id="sched-list"></div>
+    </div>
+    <div class="right-col">
+      <div class="panels-col">
+        <div class="panel-chip" id="chip-0"><div class="chip-accent"></div><div class="chip-body"><div class="chip-panel">Painel I</div><div class="chip-title">Sistema de CTI do Ex&eacute;rcito (SCTIEx)</div><div class="chip-time">09h40 &ndash; 11h30</div></div></div>
+        <div class="panel-chip" id="chip-1"><div class="chip-accent"></div><div class="chip-body"><div class="chip-panel">Painel II</div><div class="chip-title">Estrutura&ccedil;&atilde;o de Parques Tecnol&oacute;gicos</div><div class="chip-time">13h00 &ndash; 15h15</div></div></div>
+        <div class="panel-chip" id="chip-2"><div class="chip-accent"></div><div class="chip-body"><div class="chip-panel">Painel III</div><div class="chip-title">Financiamento de Parques Tecnol&oacute;gicos</div><div class="chip-time">15h55 &ndash; 17h20</div></div></div>
+      </div>
+      <div class="speaker-stage" id="stage"></div>
+      <div class="dots-row" id="dots"></div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span class="ft">Ex&eacute;rcito Brasileiro</span><span class="ft-sep">&middot;</span>
+    <span class="ft">DCT</span><span class="ft-sep">&middot;</span>
+    <span class="ft">DEPDI</span><span class="ft-sep">&middot;</span>
+    <span class="ft">N&uacute;cleo do PTDSC</span><span class="ft-sep">&middot;</span>
+    <span class="ft">UNICAMP</span><span class="ft-sep">|</span>
+    <span class="ft" style="opacity:.6">Apoio: FAPESP &middot; POUPEX</span>
+  </div>
+</div>
+<script>
+const canvas = document.getElementById('nc'), ctx = canvas.getContext('2d');
+function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+resize(); window.addEventListener('resize', resize);
+const PALETTE = [{r:56,g:189,b:248},{r:34,g:211,b:238},{r:52,g:211,b:153},{r:99,g:230,b:190},{r:147,g:210,b:255}];
+const N = 52, nodes = [];
+for (let i = 0; i < N; i++) {
+  const c = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+  nodes.push({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.0003,vy:(Math.random()-.5)*.0003,r:Math.random()*2.5+1.2,c});
+}
+const pulses = [];
+setInterval(() => {
+  const a = nodes[Math.floor(Math.random()*N)], b = nodes[Math.floor(Math.random()*N)];
+  if (a === b) return;
+  const d = Math.hypot((a.x-b.x)*(canvas.width||900),(a.y-b.y)*(canvas.height||200));
+  if (d > 220) return;
+  pulses.push({a,b,t:0,speed:.005+Math.random()*.004});
+}, 260);
+(function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const W = canvas.width||900, H = canvas.height||200;
+  nodes.forEach(n => { n.x+=n.vx; n.y+=n.vy; if(n.x<0||n.x>1)n.vx*=-1; if(n.y<0||n.y>1)n.vy*=-1; });
+  for (let i = 0; i < N; i++) for (let j = i+1; j < N; j++) {
+    const dx=(nodes[i].x-nodes[j].x)*W, dy=(nodes[i].y-nodes[j].y)*H, d=Math.sqrt(dx*dx+dy*dy);
+    if (d < 200) { const al=(1-d/200)*.3,c=nodes[i].c; ctx.beginPath(); ctx.moveTo(nodes[i].x*W,nodes[i].y*H); ctx.lineTo(nodes[j].x*W,nodes[j].y*H); ctx.strokeStyle='rgba('+c.r+','+c.g+','+c.b+','+al+')'; ctx.lineWidth=.7; ctx.stroke(); }
+  }
+  for (let k = pulses.length-1; k >= 0; k--) {
+    const p = pulses[k]; p.t += p.speed; if (p.t >= 1) { pulses.splice(k,1); continue; }
+    const px=(p.a.x+(p.b.x-p.a.x)*p.t)*W, py=(p.a.y+(p.b.y-p.a.y)*p.t)*H;
+    ctx.beginPath(); ctx.arc(px,py,2.5,0,Math.PI*2); ctx.fillStyle='rgba(220,245,255,.82)'; ctx.fill();
+  }
+  nodes.forEach(n => { ctx.beginPath(); ctx.arc(n.x*W,n.y*H,n.r,0,Math.PI*2); ctx.fillStyle='rgba('+n.c.r+','+n.c.g+','+n.c.b+',.78)'; ctx.fill(); });
+  requestAnimationFrame(draw);
+})();
+
+const schedule = [
+  {time:'08h00\u201308h50',text:'Recep\u00e7\u00e3o e credenciamento',isBreak:false,si:0},
+  {time:'09h00\u201309h05',text:'Hino Nacional',isBreak:false,si:1},
+  {time:'09h10\u201309h35',text:'Mesa de abertura',isBreak:false,si:2},
+  {time:'09h40\u201311h30',text:'Painel I \u00b7 SCTIEx',isBreak:false,si:3},
+  {time:'11h30\u201313h00',text:'ALMO\u00c7O',isBreak:true,si:4},
+  {time:'13h00\u201315h15',text:'Painel II \u00b7 Estrutura\u00e7\u00e3o',isBreak:false,si:5},
+  {time:'15h20\u201315h50',text:'INTERVALO',isBreak:true,si:6},
+  {time:'15h55\u201317h20',text:'Painel III \u00b7 Financiamento',isBreak:false,si:7},
+  {time:'17h20\u201317h30',text:'Encerramento',isBreak:false,si:8},
+];
+const sl = document.getElementById('sched-list');
+schedule.forEach((s,i) => {
+  const el = document.createElement('div');
+  el.className = 'sched-item' + (s.isBreak ? ' is-break' : '');
+  el.id = 'si-' + i;
+  el.innerHTML = '<div class="sched-time">' + s.time + '</div><div class="sched-text">' + s.text + '</div>';
+  sl.appendChild(el);
+});
+
+const speakers = [
+  {
+    painel:'Mesa de Abertura',
+    name:'Gen Div Armando Morado Ferreira',
+    role:'Chefe de Ensino, Pesquisa, Desenvolvimento e Inova\u00e7\u00e3o \u2013 DCT',
+    bio:'Engenheiro Mec\u00e2nico e de Autom\u00f3vel pelo IME, mestre e doutor em Engenharia Mec\u00e2nica pela Universidade de Delaware (EUA). MBA em Gerenciamento de Projetos e forma\u00e7\u00e3o em Pol\u00edtica, Estrat\u00e9gia e Alta Administra\u00e7\u00e3o do Ex\u00e9rcito. Exerceu fun\u00e7\u00f5es de destaque no IME, no DCT e no Projeto Estrat\u00e9gico Guarani.',
+    panel:null,si:2
+  },
+  {
+    painel:'Mesa de Abertura',
+    name:'Prof. Dr. Marcelo Caldeira Pedroso',
+    role:'Coord. de Ambientes de Inova\u00e7\u00e3o \u2013 SCTI SP',
+    bio:'Especialista em inova\u00e7\u00e3o, empreendedorismo tecnol\u00f3gico e desenvolvimento de ecossistemas. Atua na SCTI-SP coordenando iniciativas voltadas \u00e0 estrutura\u00e7\u00e3o de parques tecnol\u00f3gicos e mecanismos de integra\u00e7\u00e3o entre governo, universidades e empresas.',
+    panel:null,si:2
+  },
+  {
+    painel:'Mesa de Abertura',
+    name:'Prof. Dr. Fernando Ant\u00f4nio Santos Coelho',
+    role:'Coordenador Geral da UNICAMP',
+    bio:'Professor e pesquisador da UNICAMP com ampla atua\u00e7\u00e3o na articula\u00e7\u00e3o entre ensino, pesquisa, inova\u00e7\u00e3o e desenvolvimento institucional. Participa de iniciativas voltadas ao fortalecimento das rela\u00e7\u00f5es entre universidade, governo e setor produtivo.',
+    panel:null,si:2
+  },
+  {
+    painel:'Mesa de Abertura',
+    name:'Adriana Flosi',
+    role:'Secret\u00e1ria de Desenvolvimento Econ\u00f4mico, Tecnologia e Inova\u00e7\u00e3o \u2013 Campinas',
+    bio:'Respons\u00e1vel pela formula\u00e7\u00e3o e implementa\u00e7\u00e3o de pol\u00edticas p\u00fablicas voltadas \u00e0 atra\u00e7\u00e3o de investimentos, inova\u00e7\u00e3o e empreendedorismo tecnol\u00f3gico. Atua na integra\u00e7\u00e3o entre governo, universidades, centros de pesquisa e empresas em Campinas.',
+    panel:null,si:2
+  },
+  {
+    painel:'Painel I \u00b7 SCTIEx',
+    name:'Gen Bda Marcos Lehmkuhl de Souza',
+    role:'Chefe do Centro de Defesa Cibern\u00e9tica \u2013 CDCiber',
+    bio:'Oficial da Arma de Comunica\u00e7\u00f5es, mestre em Ci\u00eancias Militares e em Opera\u00e7\u00f5es Militares, com especializa\u00e7\u00f5es em Guerra Eletr\u00f4nica e Telecomunica\u00e7\u00f5es. Atuou na Miss\u00e3o da ONU na Costa do Marfim, na OEA e na Junta Interamericana de Defesa em Washington.',
+    panel:0,si:3
+  },
+  {
+    painel:'Painel I \u00b7 SCTIEx',
+    name:'Gen Bda Santiago Cesar Fran\u00e7a Bud\u00f3',
+    role:'Chefe de Comando, Controle e Informa\u00e7\u00e3o \u2013 DCT (C2I)',
+    bio:'Oficial da Arma de Cavalaria, formado pela AMAN, com cursos de Comando e Estado-Maior e de Alta Administra\u00e7\u00e3o do Ex\u00e9rcito. Instrutor militar na Guatemala e assessor do Ex\u00e9rcito da Nam\u00edbia. Conduz projetos de transforma\u00e7\u00e3o digital e superioridade informacional.',
+    panel:0,si:3
+  },
+  {
+    painel:'Painel I \u00b7 SCTIEx',
+    name:'Cel QEM Jos\u00e9 Eduardo Xavier Fonseca',
+    role:'Chefe da Divis\u00e3o T\u00e9cnica Industrial \u2013 Diretoria de Fabrica\u00e7\u00e3o',
+    bio:'QEM formado em Engenharia de Computa\u00e7\u00e3o pelo IME. Ampla experi\u00eancia em sistemas de simula\u00e7\u00e3o de combate e gest\u00e3o de programas estrat\u00e9gicos. Participou dos projetos Jogos Ol\u00edmpicos Rio 2016 e R\u00e1dio Definido por Software de Defesa (RDS-Defesa).',
+    panel:0,si:3
+  },
+  {
+    painel:'Mediador \u00b7 Painel I',
+    name:'Cel Marcos Jos\u00e9 Ferreira Carvalho',
+    role:'Mediador \u2013 Painel I',
+    bio:'QEM especializado em Engenharia Mec\u00e2nica e de Armamento. Mestre em Metrologia pela PUC-Rio e doutor em Engenharia Mec\u00e2nica pela UFSC. Atuou no Centro de Avalia\u00e7\u00f5es do Ex\u00e9rcito e no IME em fun\u00e7\u00f5es acad\u00eamicas e de pesquisa.',
+    panel:0,si:3
+  },
+  {
+    painel:'Painel II \u00b7 Estrutura\u00e7\u00e3o',
+    name:'Gen Bda Douglas Corbari Corr\u00eaa',
+    role:'Chefe do N\u00facleo do PTDSC',
+    bio:'Respons\u00e1vel pela implanta\u00e7\u00e3o e consolida\u00e7\u00e3o do PTDSC. Articula institui\u00e7\u00f5es militares, universidades, centros de pesquisa, empresas e \u00f3rg\u00e3os governamentais para o desenvolvimento de projetos estrat\u00e9gicos de CT&I e o fortalecimento da Base Industrial de Defesa.',
+    panel:1,si:5
+  },
+  {
+    painel:'Painel II \u00b7 Estrutura\u00e7\u00e3o',
+    name:'Prof. Dr. Roberto Donato da Silva Junior',
+    role:'Diretor Executivo de Sustentabilidade da UNICAMP / Coord. do HIDS',
+    bio:'Cientista social, mestre em Sociologia e doutor em Ambiente e Sociedade pela Unicamp. Diretor Executivo de Sustentabilidade e Coordenador Geral do HIDS. Atua em conselhos estaduais de clima, meio ambiente e inova\u00e7\u00e3o.',
+    panel:1,si:5
+  },
+  {
+    painel:'Painel II \u00b7 Estrutura\u00e7\u00e3o',
+    name:'Jeferson Cheriegate',
+    role:'Presidente do PIT \u2013 Parque de Inova\u00e7\u00e3o Tecnol\u00f3gica de SJC',
+    bio:'Engenheiro de Materiais pela UFRJ e MBA Executivo pela Funda\u00e7\u00e3o Dom Cabral. Mais de vinte anos de experi\u00eancia em gest\u00e3o estrat\u00e9gica e desenvolvimento de neg\u00f3cios em empresas nacionais e multinacionais. Presidente do PIT SJC desde 2022.',
+    panel:1,si:5
+  },
+  {
+    painel:'Painel II \u00b7 Estrutura\u00e7\u00e3o',
+    name:'Marcelo Nunes da Silva',
+    role:'VP de Neg\u00f3cios \u2013 PIT SJC / Diretor de Empresas \u2013 ANPROTEC',
+    bio:'Engenheiro Florestal com especializa\u00e7\u00f5es em Gest\u00e3o Estrat\u00e9gica e Desenvolvimento Sustent\u00e1vel. VP de Neg\u00f3cios do PIT SJC e Diretor de Empresas da ANPROTEC. Criador do Cluster Aeroespacial Brasileiro, com ampla experi\u00eancia em empreendedorismo e inova\u00e7\u00e3o aberta.',
+    panel:1,si:5
+  },
+  {
+    painel:'Painel II \u00b7 Estrutura\u00e7\u00e3o',
+    name:'F\u00e1bio Caparica',
+    role:'Vice-Presidente de Contratos \u2013 Embraer Defesa & Seguran\u00e7a',
+    bio:'Na Embraer desde 2005, com passagem pela VP de Vendas para a Am\u00e9rica Latina e pela CEO da Savis. Respons\u00e1vel por negocia\u00e7\u00f5es globais, gest\u00e3o contratual e programas de offset. Vice-Presidente do Conselho de Administra\u00e7\u00e3o da ABIMDE.',
+    panel:1,si:5
+  },
+  {
+    painel:'Mediador \u00b7 Pain\u00e9is II e III',
+    name:'Cel R/1 Eduardo de Almeida Cadorin',
+    role:'Mediador \u2013 Pain\u00e9is II e III',
+    bio:'Engenheiro Eletr\u00f4nico pelo IME, mestre em Engenharia de Sistemas e doutor em Gest\u00e3o da Inova\u00e7\u00e3o pela Universidade de Link\u00f6ping (Su\u00e9cia). Atuou na AGITEC liderando a difus\u00e3o da cultura de inova\u00e7\u00e3o e a estrutura\u00e7\u00e3o de gest\u00e3o do conhecimento no Ex\u00e9rcito.',
+    panel:null,si:5
+  },
+  {
+    painel:'Painel III \u00b7 Financiamento',
+    name:'Prof. Dr. Niels Olsen Saraiva C\u00e2mara',
+    role:'Assessor Especial da Diretoria Cient\u00edfica \u2013 FAPESP',
+    bio:'Professor titular da USP e Assessor Especial da Diretoria Cient\u00edfica da FAPESP. Ampla experi\u00eancia na formula\u00e7\u00e3o e avalia\u00e7\u00e3o de programas de pesquisa cient\u00edfica, inova\u00e7\u00e3o tecnol\u00f3gica e coopera\u00e7\u00e3o internacional.',
+    panel:2,si:7
+  },
+  {
+    painel:'Painel III \u00b7 Financiamento',
+    name:'Maur\u00edcio Alves Syrio',
+    role:'Analista de Projetos \u2013 DAIE / FINEP',
+    bio:'Engenheiro Mec\u00e2nico pela UFRJ. Na FINEP desde 2002, atuando em planejamento e gest\u00e3o de programas estrat\u00e9gicos. Exerceu cargos de ger\u00eancia e superintend\u00eancia em inova\u00e7\u00e3o por mais de uma d\u00e9cada. Atua no Departamento de Ambientes de Inova\u00e7\u00e3o e Empreendedorismo.',
+    panel:2,si:7
+  },
+  {
+    painel:'Painel III \u00b7 Financiamento',
+    name:'Representante BNDES',
+    role:'Banco Nacional de Desenvolvimento Econ\u00f4mico e Social',
+    bio:'Apresentar\u00e1 as modalidades de apoio financeiro do BNDES para o desenvolvimento econ\u00f4mico do setor de Defesa e Seguran\u00e7a no \u00e2mbito do PTDSC.',
+    panel:2,si:7
+  },
+];
+
+const stage = document.getElementById('stage'), dotsEl = document.getElementById('dots');
+speakers.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot'; d.id = 'dot-' + i;
+  d.onclick = () => { clearInterval(timer); show(i); timer = setInterval(() => show((curIdx+1)%speakers.length), 6000); };
+  dotsEl.appendChild(d);
+});
+let cur = null, curIdx = -1, timer;
+function show(idx) {
+  const sp = speakers[idx];
+  if (cur) { cur.classList.remove('visible'); cur.classList.add('exiting'); const old = cur; setTimeout(() => { if (old.parentNode) old.parentNode.removeChild(old); }, 480); }
+  if (curIdx >= 0) document.getElementById('dot-' + curIdx).classList.remove('active');
+  document.getElementById('dot-' + idx).classList.add('active');
+  document.querySelectorAll('.panel-chip').forEach(c => c.classList.remove('active'));
+  if (sp.panel !== null) document.getElementById('chip-' + sp.panel).classList.add('active');
+  document.querySelectorAll('.sched-item').forEach(c => c.classList.remove('active'));
+  document.getElementById('si-' + sp.si).classList.add('active');
+  const card = document.createElement('div'); card.className = 'speaker-card';
+  card.innerHTML =
+    '<div class="sp-header"><span class="sp-painel">' + sp.painel + '&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span><span class="sp-name">' + sp.name + '</span></div>' +
+    '<div class="sp-body"><div class="sp-role">' + sp.role + '</div><div class="sp-bio">' + sp.bio + '</div></div>';
+  stage.appendChild(card);
+  requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('visible')));
+  cur = card; curIdx = idx;
+}
+show(0);
+timer = setInterval(() => show((curIdx+1) % speakers.length), 6000);
+</script>
+</body>
+</html>
